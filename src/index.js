@@ -30,9 +30,11 @@ function onLoad(entries, observer) {
           renderCardMarkup(data.hits);
           if (page === Math.ceil(data.totalHits / 40)) {
             observer.unobserve(guard);
-            Notify.info(
-              `We're sorry, but you've reached the end of search results.`
-            );
+            setTimeout(() => {
+              Notify.info(
+                `We're sorry, but you've reached the end of search results.`
+              );
+            }, 2000);
             return;
           }
         })
@@ -50,12 +52,10 @@ function onImageSearch(evt) {
 
   if (!query.trim()) {
     Notify.info(`Please, enter your search query`);
-
     return;
   } else {
     fetchImage(query, page)
       .then(data => {
-        // console.log(data);
         if (data.total === 0) {
           Notify.failure(
             'Sorry, there are no images matching your search query. Please try again.'
@@ -68,19 +68,6 @@ function onImageSearch(evt) {
       })
       .catch(error => console.log(error));
   }
-}
-
-function fetchImage(query, page) {
-  const API_KEY = '38103415-9a2b8d11501b0e8a3e6d8d0b6';
-  const BASE_URL = 'https://pixabay.com/api/';
-  return fetch(
-    `${BASE_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    return response.json();
-  });
 }
 
 function renderCardMarkup(arr) {
